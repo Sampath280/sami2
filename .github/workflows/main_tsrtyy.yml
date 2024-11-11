@@ -58,7 +58,40 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: 'Deploy to Azure Web App'
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      # Set up environment variables for database configuration
+      - name: Run Django makemigrations and migrate
+        run: |
+          source venv/bin/activate
+          python manage.py makemigrations
+          python manage.py migrate
+        env:
+          DBNAME: postgres
+          DBHOST: localhost
+          DBUSER: postgres
+          DBPASS: postgres
+
+      - name: Create Django superuser
+        run: |
+          source venv/bin/activate
+          python manage.py createsuperuser --noinput --username admin --email admin@example.com
+        env:
+          DBNAME: postgres
+          DBHOST: localhost
+          DBUSER: postgres
+          DBPASS: postgres
+
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
