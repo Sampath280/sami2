@@ -77,7 +77,7 @@ jobs:
           python manage.py migrate
         env:
           DBNAME: postgres
-          DBHOST: localhost
+          DBHOST: AzurePostHost
           DBUSER: postgres
           DBPASS: postgres
 
@@ -87,7 +87,7 @@ jobs:
           python manage.py createsuperuser --noinput --username admin1 --email admin@example.com
         env:
           DBNAME: postgres
-          DBHOST: localhost
+          DBHOST: AzurePostHost
           DBUSER: postgres
           DBPASS: postgres
 
